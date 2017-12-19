@@ -7,12 +7,17 @@ MAINTAINER SequenceIQ
 
 USER root
 
+# https://github.com/sequenceiq/hadoop-docker/issues/62
 # install dev tools
-RUN yum clean all; \
-    rpm --rebuilddb; \
-    yum install -y curl which tar sudo openssh-server openssh-clients rsync
+RUN yum clean all \
+    && rpm --rebuilddb \
+    && yum install -y curl which tar sudo openssh-server openssh-clients rsync \
+    && yum clean all \
+    && yum update -y libselinux \
+    && yum clean all
+
 # update libselinux. see https://github.com/sequenceiq/hadoop-docker/issues/14
-RUN yum update -y libselinux
+# RUN yum update -y libselinux
 
 # passwordless ssh
 RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key
@@ -31,8 +36,8 @@ ENV PATH $PATH:$JAVA_HOME/bin
 RUN rm /usr/bin/java && ln -s $JAVA_HOME/bin/java /usr/bin/java
 
 # hadoop
-RUN curl -s http://s3.amazonaws.com/public-repo-1.hortonworks.com/HDP/centos6/2.x/updates/2.6.3.0/tars/hadoop/hadoop-2.7.3.2.6.3.0-235.tar.gz | tar -xz -C /usr/local/
-RUN cd /usr/local && ln -s ./hadoop-2.7.3.2.6.3.0-235 hadoop
+RUN curl -s http://s3.amazonaws.com/public-repo-1.hortonworks.com/HDP/centos6/2.x/updates/2.6.0.3/tars/hadoop/hadoop-2.7.3.2.6.0.3-8.tar.gz | tar -xz -C /usr/local/
+RUN cd /usr/local && ln -s ./hadoop-2.7.3.2.6.0.3-8 hadoop
 
 ENV HADOOP_PREFIX /usr/local/hadoop
 ENV HADOOP_COMMON_HOME /usr/local/hadoop
