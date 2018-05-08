@@ -2,7 +2,7 @@
 #
 # docker build -t sequenceiq/hadoop .
 
-FROM sequenceiq/pam:centos-6.5
+FROM centos:7
 MAINTAINER SequenceIQ
 
 USER root
@@ -22,9 +22,9 @@ RUN cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
 
 
 # java
-RUN curl -LO 'http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm' -H 'Cookie: oraclelicense=accept-securebackup-cookie'
-RUN rpm -i jdk-8u151-linux-x64.rpm
-RUN rm jdk-8u151-linux-x64.rpm
+RUN curl -LO 'http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-x64.rpm' -H 'Cookie: oraclelicense=accept-securebackup-cookie'
+RUN rpm -i jdk-8u171-linux-x64.rpm
+RUN rm jdk-8u171-linux-x64.rpm
 
 ENV JAVA_HOME /usr/java/default
 ENV PATH $PATH:$JAVA_HOME/bin
@@ -32,13 +32,16 @@ RUN rm /usr/bin/java && ln -s $JAVA_HOME/bin/java /usr/bin/java
 
 # download native support
 RUN mkdir -p /tmp/native
-RUN curl -L https://github.com/dvoros/docker-hadoop-build/releases/download/v2.7.4/hadoop-native-64-2.7.4.tgz | tar -xz -C /tmp/native
+RUN curl -L https://github.com/dvoros/docker-hadoop-build/releases/download/v3.1.0/hadoop-native-64-3.1.0.tgz | tar -xz -C /tmp/native
 
 # hadoop
-RUN curl -s http://www.eu.apache.org/dist/hadoop/common/hadoop-2.7.4/hadoop-2.7.4.tar.gz | tar -xz -C /usr/local/
-RUN cd /usr/local && ln -s ./hadoop-2.7.4 hadoop
+RUN curl -sk https://www.eu.apache.org/dist/hadoop/common/hadoop-3.1.0/hadoop-3.1.0.tar.gz | tar -xz -C /usr/local/
+RUN cd /usr/local && ln -s ./hadoop-3.1.0 hadoop
 
 ENV HADOOP_PREFIX /usr/local/hadoop
+ENV HDFS_NAMENODE_USER root
+ENV HDFS_DATANODE_USER root
+ENV HDFS_SECONDARYNAMENODE_USER root
 ENV HADOOP_COMMON_HOME /usr/local/hadoop
 ENV HADOOP_HDFS_HOME /usr/local/hadoop
 ENV HADOOP_MAPRED_HOME /usr/local/hadoop
@@ -95,8 +98,8 @@ RUN sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config
 RUN echo "UsePAM no" >> /etc/ssh/sshd_config
 RUN echo "Port 2122" >> /etc/ssh/sshd_config
 
-RUN service sshd start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /user/root
-RUN service sshd start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input
+RUN systemctl enable sshd && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /user/root
+RUN systemctl enable sshd && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input
 
 CMD ["/etc/bootstrap.sh", "-d"]
 
