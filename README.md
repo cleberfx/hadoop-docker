@@ -46,4 +46,4 @@ bin/hdfs dfs -cat output/*
 
 ## Hadoop native libraries, build
 
-The Hadoop build process is no easy task - requires lots of libraries and their right version, protobuf, etc and takes some time - we have simplified all these, made the build and released a 64b version of Hadoop nativelibs [here](https://github.com/dvoros/docker-hadoop-build/releases). Enjoy.
+The Hadoop build process is no easy task - requires lots of libraries and their right version, protobuf, etc and takes some time - we have simplified all these, made the build and released a 64b version of Hadoop nativelibs [here](https://github.com/dvoros/docker-hadoop-build/releases). (These are automatically pulled during the build of this image.)
