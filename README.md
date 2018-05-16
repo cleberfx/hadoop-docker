@@ -36,12 +36,11 @@ docker run -it dvoros/hadoop:latest /etc/bootstrap.sh -bash
 You can run one of the stock examples:
 
 ```
-cd $HADOOP_HOME
 # run mapreduce
-bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar grep input output 'dfs[a-z.]+'
+hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar grep input output 'dfs[a-z.]+'
 
 # check the output
-bin/hdfs dfs -cat output/*
+hdfs dfs -cat output/*
 ```
 
 ## Hadoop native libraries, build

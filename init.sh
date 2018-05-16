@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# This file is running during Docker image creation only
 /usr/sbin/sshd
 
 $HADOOP_HOME/bin/hdfs namenode -format

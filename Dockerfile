@@ -72,13 +72,6 @@ ADD ssh_config /root/.ssh/config
 RUN chmod 600 /root/.ssh/config
 RUN chown root:root /root/.ssh/config
 
-
-ADD bootstrap.sh /etc/bootstrap.sh
-RUN chown root:root /etc/bootstrap.sh
-RUN chmod 700 /etc/bootstrap.sh
-
-ENV BOOTSTRAP /etc/bootstrap.sh
-
 # workingaround docker.io build error
 RUN ls -la /usr/local/hadoop/etc/hadoop/*-env.sh
 RUN chmod +x /usr/local/hadoop/etc/hadoop/*-env.sh
@@ -89,13 +82,24 @@ RUN sed  -i "/^[^#]*UsePAM/ s/.*/#&/"  /etc/ssh/sshd_config
 RUN echo "UsePAM no" >> /etc/ssh/sshd_config
 RUN echo "Port 2122" >> /etc/ssh/sshd_config
 
-ADD init.sh /etc/init.sh
-RUN chown root:root /etc/init.sh
-RUN chmod 700 /etc/init.sh
-RUN /etc/init.sh
+# Make Hadoop executables available on PATH
+ENV PATH $PATH:$HADOOP_HOME/bin
 
+# Adding startup files
+RUN mkdir /etc/docker-startup
+ADD init.sh /etc/docker-startup/init.sh
+ADD entrypoint.sh /etc/docker-startup/entrypoint.sh
+ADD bootstrap.sh /etc/docker-startup/bootstrap.sh
+RUN chown -R root:root /etc/docker-startup
+RUN chmod -R 700 /etc/docker-startup
 
-CMD ["/etc/bootstrap.sh", "-d"]
+# This creates initial directories, only run this during image building
+RUN /etc/docker-startup/init.sh
+
+# Downstream images can use this too start Hadoop services
+ENV BOOTSTRAP /etc/docker-startup/bootstrap.sh
+
+CMD ["/etc/docker-startup/entrypoint.sh"]
 
 # Hdfs ports
 EXPOSE 50010 50020 50070 50075 50090 8020 9000
