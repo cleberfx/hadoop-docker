@@ -32,11 +32,11 @@ RUN rm /usr/bin/java && ln -s $JAVA_HOME/bin/java /usr/bin/java
 
 # download native support
 RUN mkdir -p /tmp/native
-RUN curl -L https://github.com/dvoros/docker-hadoop-build/releases/download/v2.9.0/hadoop-native-64-2.9.0.tgz | tar -xz -C /tmp/native
+RUN curl -L https://github.com/dvoros/docker-hadoop-build/releases/download/v3.1.1/hadoop-native-64-3.1.1.tgz | tar -xz -C /tmp/native
 
 # hadoop
-RUN curl -sk http://www-eu.apache.org/dist/hadoop/common/hadoop-2.9.0/hadoop-2.9.0.tar.gz | tar -xz -C /usr/local/
-RUN cd /usr/local && ln -s ./hadoop-2.9.0 hadoop
+RUN curl -sk https://www.eu.apache.org/dist/hadoop/common/hadoop-3.1.1/hadoop-3.1.1.tar.gz | tar -xz -C /usr/local/
+RUN cd /usr/local && ln -s ./hadoop-3.1.1 hadoop
 
 ENV HADOOP_HOME /usr/local/hadoop
 ENV HDFS_NAMENODE_USER root
