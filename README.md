@@ -55,7 +55,7 @@ Image                      | Base CentOS image
 ---------------------------|------------------
 dvoros/hadoop:2.7.4        | 6.5
 dvoros/hadoop:2.9.0        | 7.0
-dvoros/hadoop:3.1.0        | 7.0
+dvoros/hadoop:3.1.1        | 7.0
 
 ## Downstream images
 
@@ -68,6 +68,7 @@ Image                      | Hadoop image
 ---------------------------|--------------
 dvoros/tez:0.8.4           | 2.7.4
 dvoros/tez:0.8.5           | 2.9.0
+dvoros/tez:0.9.1           | 3.1.1
 
 ### Hive
 
@@ -75,6 +76,7 @@ Image                      | Hadoop image | Tez image
 ---------------------------|--------------|-----------
 dvoros/hive:2.3.0          | 2.7.4        | 0.8.4
 dvoros/hive:2.3.3          | 2.9.0        | 0.8.5
+dvoros/hive:3.1.1          | 3.1.1        | 0.9.1
 
 ### Sqoop
 
