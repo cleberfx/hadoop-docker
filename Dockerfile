@@ -31,11 +31,13 @@ ENV PATH $PATH:$JAVA_HOME/bin
 RUN rm /usr/bin/java && ln -s $JAVA_HOME/bin/java /usr/bin/java
 
 # download native support
-RUN mkdir -p /tmp/native
-RUN curl -L https://github.com/dvoros/docker-hadoop-build/releases/download/v2.9.0/hadoop-native-64-2.9.0.tgz | tar -xz -C /tmp/native
+#RUN mkdir -p /tmp/native
+#RUN curl -L https://github.com/dvoros/docker-hadoop-build/releases/download/v2.9.0/hadoop-native-64-2.9.0.tgz | tar -xz -C /tmp/native
 
 # hadoop
-RUN curl -sk http://www-eu.apache.org/dist/hadoop/common/hadoop-2.9.0/hadoop-2.9.0.tar.gz | tar -xz -C /usr/local/
+RUN curl -sL --retry 3 \
+  "http://www-eu.apache.org/dist/hadoop/common/hadoop-2.9.0/hadoop-2.9.0.tar.gz" | gunzip \
+  | tar -x -C /usr/local/
 RUN cd /usr/local && ln -s ./hadoop-2.9.0 hadoop
 
 ENV HADOOP_HOME /usr/local/hadoop
